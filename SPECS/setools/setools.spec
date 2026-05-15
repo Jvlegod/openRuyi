@@ -32,7 +32,7 @@ BuildRequires:  pkgconfig(libsepol)
 BuildRequires:  pkgconfig(libselinux)
 BuildRequires:  swig
 # For tests.
-BuildRequires:  pytest
+BuildRequires:  python3dist(pytest)
 BuildRequires:  checkpolicy
 BuildRequires:  python3dist(networkx) >= 2.6
 
