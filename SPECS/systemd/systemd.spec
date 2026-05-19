@@ -1527,6 +1527,8 @@ fi
 %{_datadir}/zsh/site-functions/_networkctl
 %{pkgdir}/system/systemd-networkd.service
 %{pkgdir}/system/systemd-networkd.socket
+%{pkgdir}/system/systemd-network-generator.service
+%{pkgdir}/system/systemd-networkd-resolve-hook.socket
 %{pkgdir}/system/systemd-networkd-wait-online.service
 
 %files networkd-defaults
