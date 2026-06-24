@@ -6,12 +6,12 @@
 # SPDX-License-Identifier: MulanPSL-2.0
 
 Name:           labwc
-Version:        0.9.7
+Version:        0.20.1
 Release:        %autorelease
 Summary:        A Wayland window-stacking compositor
 License:        GPL-2.0-only
 URL:            https://github.com/labwc/labwc
-#!RemoteAsset:  sha256:4ad4e5e7f29e0d0704fadb4a072037173d850b46f12122b79168879b922e0f43
+#!RemoteAsset:  sha256:2c95d8c19cc50ce0dd5cf3e412932ebb4d3353bc4a5d11e2405d124e6c77dcd2
 Source0:        https://github.com/labwc/labwc/archive/refs/tags/%{version}.tar.gz
 BuildSystem:    meson
 
@@ -27,9 +27,10 @@ BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(scdoc)
+BuildRequires:  pkgconfig(systemd)
 BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  pkgconfig(wayland-server) >= 0.19.0
-BuildRequires:  pkgconfig(wlroots-0.19)
+BuildRequires:  pkgconfig(wlroots-0.20)
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xkbcommon)
 
@@ -48,17 +49,17 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/locale/*@*
 %find_lang %{name} --generate-subpackages
 
 %files -f %{name}.lang
+%doc NEWS.md README autostart environment menu.xml rc.xml rc.xml.all shutdown themerc
 %license LICENSE
-%doc NEWS.md
 %{_bindir}/labwc
 %{_bindir}/lab-sensible-terminal
 %{_bindir}/labnag
-%{_docdir}/labwc
 %{_mandir}/man1/*.1*
 %{_mandir}/man5/*.5*
 %{_datadir}/xdg-desktop-portal/labwc-portals.conf
 %{_datadir}/wayland-sessions/labwc.desktop
 %{_datadir}/icons/hicolor/*/*/labwc*.svg
+%{_userunitdir}/labwc-session.target
 
 %changelog
 %autochangelog
