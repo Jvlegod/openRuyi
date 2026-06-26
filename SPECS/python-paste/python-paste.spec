@@ -46,11 +46,13 @@ interfaces.
 %generate_buildrequires
 %pyproject_buildrequires
 
-%check -a
+# TODO: Tests require lots of pkg_resources usage
+# Track this issue here: https://github.com/pasteorg/paste/pull/105
+#check -a
 # No internet access during tests
-%pytest -W ignore::DeprecationWarning \
-    --deselect tests/test_cgiapp.py::test_form \
-    --deselect tests/test_httpserver.py::test_address_family_v4
+#pytest -W ignore::DeprecationWarning \
+#    --deselect tests/test_cgiapp.py::test_form \
+#    --deselect tests/test_httpserver.py::test_address_family_v4
 
 %files -f %{pyproject_files}
 %doc docs/*
