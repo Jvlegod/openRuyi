@@ -190,6 +190,8 @@ Patch1033:      0033-RISC-V-Support-Ssu64xl-extension.patch
 Patch1034:      0034-RISC-V-Update-Profiles-string-in-RV23.patch
 Patch1035:      0035-RISC-V-Add-Profiles-RVA-B23S64-support.patch
 Patch1036:      0036-RISC-V-check-if-we-can-vec_extract.patch
+# Fix tree vectorization breaking NaN handling of fmin/fmax
+Patch1000:      1000-UPSTREAM-RISC-V-Change-initial-value-for-fmin-fmax-autovec-re.patch
 
 %description
 Core package for the GNU Compiler Collection, including the C language
