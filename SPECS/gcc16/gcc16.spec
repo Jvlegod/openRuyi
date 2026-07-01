@@ -149,6 +149,8 @@ Requires:       libvtv >= %{version}-%{release}
 %endif
 Suggests:       gcc%{vermajor}-doc
 
+# Fix tree vectorization breaking NaN handling of fmin/fmax
+Patch1000:      1000-UPSTREAM-RISC-V-Change-initial-value-for-fmin-fmax-autovec-re.patch
 Patch2000:      2000-textdomain.patch
 Patch2001:      2001-rename-info-files.patch
 
