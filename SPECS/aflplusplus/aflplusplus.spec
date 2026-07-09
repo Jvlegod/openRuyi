@@ -8,7 +8,7 @@
 %global clang /usr/bin/clang
 %global lld /usr/bin/ld.lld
 %global afl_helper_path %{_libdir}/af
-
+%global _lto_cflags %{nil}
 %global srcname Aflplusplus
 
 Name:           %{srcname}
@@ -22,6 +22,28 @@ VCS:            git:https://github.com/AFLplusplus/AFLplusplus
 Source0:        https://github.com/AFLplusplus/AFLplusplus/archive/refs/tags/v%{version}.tar.gz
 # For running the tests:
 Source1:        hello.c
+BuildSystem:    autotools
+
+BuildOption(prep):  -n AFLplusplus-%{version}
+%ifnarch x86_64
+BuildOption(build):  AFL_NO_X86=1
+BuildOption(install):  AFL_NO_X86=1
+%endif
+BuildOption(build):  LLVM_CONFIG="%{llvm_config}"
+BuildOption(build):  AFL_REAL_LD="%{lld}"
+BuildOption(build):  PREFIX="%{_prefix}"
+BuildOption(build):  HELPER_PATH="%{afl_helper_path}"
+BuildOption(build):  DOC_PATH="%{_pkgdocdir}"
+BuildOption(build):  MAN_PATH="%{_mandir}/man8"
+BuildOption(build):  MISC_PATH="%{_pkgdocdir}"
+BuildOption(build):  source-only
+BuildOption(install):  LLVM_CONFIG="%{llvm_config}"
+BuildOption(install):  AFL_REAL_LD="%{lld}"
+BuildOption(install):  PREFIX="%{_prefix}"
+BuildOption(install):  HELPER_PATH="%{afl_helper_path}"
+BuildOption(install):  DOC_PATH="%{_pkgdocdir}"
+BuildOption(install):  MAN_PATH="%{_mandir}/man8"
+BuildOption(install):  MISC_PATH="%{_pkgdocdir}"
 
 BuildRequires:  clang
 BuildRequires:  gcc%{gcc_version}-devel
@@ -65,51 +87,22 @@ Recommends:     compiler-rt
 This subpackage contains clang and clang++ support for
 %{srcname}.
 
-%prep
-%autosetup -n AFLplusplus-%{version}
-
-%build
-# This package appears to be failing because links to the LLVM plugins
-# are not installed which results in the tools not being able to
-# interpret the .o/.a files.  Disable LTO for now
-%define _lto_cflags %{nil}
-
+%build -p
 # We used to set CFLAGS/CXXFLAGS = %%{optflags} here, but these break
 # the Clang instrumentation in some way.
 unset CFLAGS
 unset CXXFLAGS
 
-%ifnarch x86_64
-AFL_NO_X86=1 \
-%endif
-LLVM_CONFIG="%{llvm_config}" \
-AFL_REAL_LD="%{lld}" \
-%{__make} %{?_smp_mflags} \
-  PREFIX="%{_prefix}" \
-  HELPER_PATH="%{afl_helper_path}" \
-  DOC_PATH="%{_pkgdocdir}" \
-  MAN_PATH="%{_mandir}/man8" \
-  MISC_PATH="%{_pkgdocdir}" \
-  source-only
+%conf
+# No configure script
 
-%install
+%install -p
 # We used to set CFLAGS/CXXFLAGS = %%{optflags} here, but these break
 # the Clang instrumentation in some way.
 unset CFLAGS
 unset CXXFLAGS
 
-%ifnarch x86_64
-AFL_NO_X86=1 \
-%endif
-LLVM_CONFIG="%{llvm_config}" \
-AFL_REAL_LD="%{lld}" \
-%{make_install} \
-  PREFIX="%{_prefix}" \
-  HELPER_PATH="%{afl_helper_path}" \
-  DOC_PATH="%{_pkgdocdir}" \
-  MAN_PATH="%{_mandir}/man8" \
-  MISC_PATH="%{_pkgdocdir}"
-
+%install -a
 %ifnarch x86_64
 # On non-x86 these files are built and installed but they don't
 # function, so delete them.  Only afl-clang-fast* works.
@@ -127,8 +120,6 @@ rm $RPM_BUILD_ROOT%{_mandir}/man8/afl-c++.8*
 # ERROR: No build ID note found in <.o file>
 chmod -x $RPM_BUILD_ROOT%{afl_helper_path}/*.o
 
-# This file is created when I build locally, but not when I build in
-# Koji.  Remove it so I can build locally.
 %if 0%{?__isa_bits} == 64
 rm -f $RPM_BUILD_ROOT%{afl_helper_path}/afl-compiler-rt-32.o
 rm -f $RPM_BUILD_ROOT%{afl_helper_path}/afl-llvm-rt-32.o
